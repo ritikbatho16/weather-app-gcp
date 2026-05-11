@@ -1,0 +1,21 @@
+steps:
+  # 1. Build the Docker Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-repo/weather-app', '.']
+
+  # 2. Push to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-repo/weather-app']
+
+  # 3. Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'weather-app'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-repo/weather-app'
+      - '--region'
+      - 'us-central1'
+      - '--allow-unauthenticated'
