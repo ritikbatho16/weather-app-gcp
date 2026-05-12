@@ -19,3 +19,7 @@ steps:
       - '--region'
       - 'us-central1'
       - '--allow-unauthenticated'
+
+# Yeh section logging error ko fix karta hai
+options:
+  logging: CLOUD_LOGGING_ONLY
