@@ -1,0 +1,12 @@
+# Python temporary files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables (safeguard)
+.env
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -5,7 +5,8 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 # Aapki API Key yahan set hai
-API_KEY = "3716b0aee2851aa802b22bef0dc81b71"
+# Ab code mein koi key nahi hai, yeh GCP system se uthayega
+API_KEY = os.environ.get("WEATHER_API_KEY", "3716b0aee2851aa802b22bef0dc81b71")
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

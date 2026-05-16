@@ -1,13 +1,10 @@
 steps:
-  # 1. Build the Docker Image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-repo/weather-app', '.']
-
-  # 2. Push to Artifact Registry
+  
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-repo/weather-app']
 
-  # 3. Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -19,7 +16,8 @@ steps:
       - '--region'
       - 'us-central1'
       - '--allow-unauthenticated'
+      # 👇 YEH LINE ADD KAREIN (Isse aapki key safe tarike se cloud me set ho jayegi)
+      - '--set-env-vars=WEATHER_API_KEY=3716b0aee2851aa802b22bef0dc81b71'
 
-# Yeh section logging error ko fix karta hai
 options:
   logging: CLOUD_LOGGING_ONLY
