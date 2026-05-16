@@ -16,7 +16,6 @@ steps:
       - '--region'
       - 'us-central1'
       - '--allow-unauthenticated'
-      # 👇 YEH LINE ADD KAREIN (Isse aapki key safe tarike se cloud me set ho jayegi)
       - '--set-env-vars=WEATHER_API_KEY=3716b0aee2851aa802b22bef0dc81b71'
 
 options:

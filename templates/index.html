@@ -3,187 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Weather Dashboard</title>
-    
+    <title>Advanced Weather Station</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --card-bg: rgba(255, 255, 255, 0.15);
-            --card-border: rgba(255, 255, 255, 0.25);
-            --text-main: #ffffff;
-            --text-sub: #f0f0f0;
-        }
-
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Ubuntu', sans-serif; }
+        
         body {
-            /* Futuristic Smooth Animated Gradient Background */
-            background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1e3c72);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: radial-gradient(circle at center, #1e293b, #0f172a);
             min-height: 100vh;
             display: flex; justify-content: center; align-items: center;
-            color: var(--text-main); padding: 20px;
+            color: #f8fafc; padding: 20px;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .wrapper { width: 100%; max-width: 500px; }
+
+        /* Search Layout */
+        .search-bar {
+            display: flex; background: rgba(255, 255, 255, 0.05);
+            padding: 8px 8px 8px 20px; border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 25px;
+        }
+        .search-bar input {
+            flex: 1; background: transparent; border: none; outline: none;
+            color: white; font-size: 1.1rem;
+        }
+        .search-bar button {
+            background: #0ea5e9; border: none; color: white;
+            width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: 0.2s;
+        }
+        .search-bar button:hover { background: #0284c7; transform: scale(1.05); }
+
+        .error-box {
+            background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444;
+            color: #fca5a5; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center;
         }
 
-        .dashboard-container {
-            width: 100%; max-width: 480px;
+        /* Weather Board */
+        .main-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 25px; padding: 30px 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center; backdrop-filter: blur(10px);
         }
 
-        /* Live Clock & Date Widget */
-        .datetime-widget {
-            text-align: center; margin-bottom: 20px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .live-time { font-size: 2.2rem; font-weight: 700; letter-spacing: 1px; }
-        .live-date { font-size: 1rem; font-weight: 300; color: #cbd5e1; }
+        .location-header h2 { font-size: 2.2rem; font-weight: 700; color: #fff; }
+        .time-badge { font-size: 1.4rem; color: #38bdf8; font-weight: 500; margin-top: 5px; }
+        .date-badge { font-size: 0.9rem; color: #94a3b8; }
 
-        /* Modern Glassmorphic Search Box */
-        .search-box {
-            background: var(--card-bg); padding: 10px 10px 10px 25px;
-            border-radius: 50px; border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            display: flex; align-items: center; margin-bottom: 25px;
-            transition: 0.3s ease;
-        }
-        .search-box:focus-within {
-            border-color: #38bdf8;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
-        }
-        .search-box input {
-            flex: 1; padding: 10px 0; border: none; outline: none;
-            font-size: 1.1rem; background: transparent; color: var(--text-main);
-        }
-        .search-box input::placeholder { color: #e2e8f0; opacity: 0.7; }
-        
-        .search-box button {
-            background: #38bdf8; color: #0f172a; border: none;
-            width: 45px; height: 45px; border-radius: 50%;
-            cursor: pointer; font-size: 1.1rem; display: flex;
-            justify-content: center; align-items: center; transition: 0.3s;
-        }
-        .search-box button:hover { background: #0ea5e9; transform: scale(1.05); }
+        .hero-weather { margin: 25px 0; }
+        .hero-weather i { font-size: 5.5rem; color: #facc15; filter: drop-shadow(0 10px 15px rgba(25a,204,21,0.3)); }
+        .hero-weather .temp { font-size: 4.8rem; font-weight: 700; display: block; margin-top: 10px; }
+        .hero-weather .condition { text-transform: capitalize; font-size: 1.2rem; color: #cbd5e1; font-weight: 300; }
 
-        /* Error Alert */
-        .error-msg {
-            background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #fca5a5; padding: 12px; border-radius: 15px; margin-bottom: 20px;
-            backdrop-filter: blur(10px); display: flex; align-items: center; gap: 10px;
-        }
-
-        /* Main Weather Dashboard Card */
-        .weather-card {
-            background: var(--card-bg); padding: 35px 25px;
-            border-radius: 30px; border: 1px solid var(--card-border);
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-
-        .city-name { font-size: 2rem; font-weight: 700; margin-bottom: 5px; display: flex; justify-content: center; align-items: center; gap: 12px; }
-        .city-name i { color: #38bdf8; font-size: 1.6rem; }
-
-        /* Animated Bigger Weather Icons */
-        .weather-icon { font-size: 6.5rem; margin: 15px 0; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); }
-        .wi-cloud { color: #e2e8f0; animation: float 4s ease-in-out infinite; }
-        .wi-rain { color: #60a5fa; animation: float 3s ease-in-out infinite; }
-        .wi-clear { color: #facc15; animation: spin 20s linear infinite; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .temp-display { margin-bottom: 5px; }
-        .temp { font-size: 4.5rem; font-weight: 700; line-height: 1; }
-        .desc { text-transform: capitalize; font-size: 1.2rem; color: #e2e8f0; font-weight: 300; margin-bottom: 30px; letter-spacing: 0.5px; }
-
-        /* Dynamic Grid Info Panels */
-        .details-grid {
+        /* Environmental Grid Details */
+        .env-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.15); padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 25px;
         }
 
-        .panel {
-            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px; border-radius: 20px; display: flex; align-items: center; gap: 15px;
-            text-align: left; transition: transform 0.3s;
+        .env-card {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; text-align: left;
         }
-        .panel:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.1); }
-        .panel i { font-size: 1.6rem; color: #38bdf8; }
-        .panel-info span { font-size: 1.1rem; font-weight: 600; display: block; }
-        .panel-info small { font-size: 0.8rem; color: #cbd5e1; font-weight: 300; }
+        .env-card i { font-size: 1.5rem; color: #38bdf8; width: 25px; text-align: center; }
+        .env-meta span { font-size: 1.1rem; font-weight: 500; display: block; }
+        .env-meta small { color: #94a3b8; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-container">
-        
-        <div class="datetime-widget">
-            <div class="live-time" id="clock">00:00:00 AM</div>
-            <div class="live-date" id="date">Loading Date...</div>
-        </div>
-
-        <form method="POST" class="search-box">
-            <input type="text" name="city" placeholder="Search city weather..." required autocomplete="off">
+    <div class="wrapper">
+        <form method="POST" class="search-bar">
+            <input type="text" name="city" placeholder="Enter City Name (e.g., Mumbai, London)..." required autocomplete="off">
             <button type="submit"><i class="fas fa-search"></i></button>
         </form>
 
         {% if error %}
-        <div class="error-msg">
-            <i class="fas fa-triangle-exclamation"></i> <span>{{ error }}</span>
-        </div>
+        <div class="error-box"><i class="fas fa-circle-exclamation"></i> {{ error }}</div>
         {% endif %}
 
         {% if weather %}
-        <div class="weather-card">
-            <div class="city-name">
-                <i class="fas fa-location-crosshairs"></i> {{ city.upper() }}
+        <div class="main-card">
+            <div class="location-header">
+                <h2><i class="fas fa-location-dot" style="color: #ef4444; font-size: 1.6rem; margin-right: 5px;"></i> {{ city.upper() }}</h2>
+                <div class="time-badge"><i class="far fa-clock"></i> {{ city_time }}</div>
+                <div class="date-badge">{{ city_date }}</div>
             </div>
-            
-            <div class="weather-icon">
+
+            <div class="hero-weather">
                 {% if 'cloud' in weather.weather[0].description %}
-                    <i class="fas fa-cloud-sun wi-cloud"></i>
+                    <i class="fas fa-cloud-sun" style="color: #94a3b8;"></i>
                 {% elif 'rain' in weather.weather[0].description %}
-                    <i class="fas fa-cloud-showers-heavy wi-rain"></i>
+                    <i class="fas fa-cloud-showers-heavy" style="color: #60a5fa;"></i>
                 {% elif 'clear' in weather.weather[0].description or 'sun' in weather.weather[0].description %}
-                    <i class="fas fa-sun wi-clear"></i>
+                    <i class="fas fa-sun"></i>
                 {% else %}
-                    <i class="fas fa-smog wi-cloud"></i>
+                    <i class="fas fa-smog" style="color: #cbd5e1;"></i>
                 {% endif %}
-            </div>
-
-            <div class="temp-display">
                 <span class="temp">{{ weather.main.temp }}°C</span>
+                <span class="condition">{{ weather.weather[0].description }}</span>
             </div>
-            <div class="desc">{{ weather.weather[0].description }}</div>
 
-            <div class="details-grid">
-                <div class="panel">
+            <div class="env-grid">
+                <div class="env-card">
+                    <i class="fas fa-temperature-half"></i>
+                    <div class="env-meta">
+                        <span>{{ weather.main.feels_like }}°C</span>
+                        <small>Feels Like</small>
+                    </div>
+                </div>
+                <div class="env-card">
                     <i class="fas fa-droplet"></i>
-                    <div class="panel-info">
+                    <div class="env-meta">
                         <span>{{ weather.main.humidity }}%</span>
                         <small>Humidity</small>
                     </div>
                 </div>
-                <div class="panel">
+                <div class="env-card">
                     <i class="fas fa-wind"></i>
-                    <div class="panel-info">
+                    <div class="env-meta">
                         <span>{{ weather.wind.speed }} m/s</span>
                         <small>Wind Speed</small>
+                    </div>
+                </div>
+                <div class="env-card">
+                    <i class="fas fa-gauge"></i>
+                    <div class="env-meta">
+                        <span>{{ weather.main.pressure }} hPa</span>
+                        <small>Pressure</small>
+                    </div>
+                </div>
+                <div class="env-card">
+                    <i class="fas fa-eye"></i>
+                    <div class="env-meta">
+                        <span>{{ (weather.visibility / 1000) | round(1) }} km</span>
+                        <small>Visibility</small>
+                    </div>
+                </div>
+                <div class="env-card">
+                    <i class="fas fa-cloud"></i>
+                    <div class="env-meta">
+                        <span>{{ weather.clouds.all }}%</span>
+                        <small>Cloudiness</small>
                     </div>
                 </div>
             </div>
@@ -191,29 +155,5 @@
         {% endif %}
     </div>
 
-    <script>
-        function updateDateTime() {
-            const now = new Date();
-            
-            // Time Formatting
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            let seconds = now.getSeconds();
-            let ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; // 0 should be 12
-            minutes = minutes < 10 ? '0'+minutes : minutes;
-            seconds = seconds < 10 ? '0'+seconds : seconds;
-            
-            document.getElementById('clock').innerHTML = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
-            
-            // Date Formatting
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('date').innerHTML = now.toLocaleDateString('en-US', options);
-        }
-        
-        setInterval(updateDateTime, 1000);
-        updateDateTime(); // Initial call
-    </script>
 </body>
 </html>
