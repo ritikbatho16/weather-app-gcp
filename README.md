@@ -4,6 +4,7 @@ An ultra-modern, production-ready Weather Dashboard application built with **Fla
 
 🚀 **Live Demo:** [https://weather-app-41719782460.us-central1.run.app](https://weather-app-41719782460.us-central1.run.app)
 
+<img width="1920" height="1020" alt="Image" src="https://github.com/user-attachments/assets/949c4562-9b28-4264-8e75-0d3a6493460a" />
 ---
 
 ## ✨ Features
